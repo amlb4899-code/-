@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>التجربة الإلكترونية: أهمية توحيد أداة القياس</title>
+<style>
+:root{--navy:#173f6b;--blue:#2b6aa3;--sky:#eef7ff;--gold:#d7a33d;--green:#2b7a56;--red:#b54a4a;--ink:#17324d;--line:#c9d8e6}
+*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#eef5fb;color:var(--ink)}
+.wrap{max-width:1100px;margin:auto;padding:18px}.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;padding:24px;border-radius:20px;box-shadow:0 8px 24px #173f6b22}.hero h1{margin:0 0 8px;font-size:30px}.hero p{margin:0;line-height:1.8}.meta{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}.meta div{background:#ffffff22;padding:8px;border-radius:10px;text-align:center}
+.card{background:#fff;margin-top:16px;padding:18px;border-radius:18px;box-shadow:0 6px 18px #173f6b15}.goal{background:#fff8e8;border-right:5px solid var(--gold)}
+.studentbar{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px}.studentbar label,.report label{font-weight:700}.studentbar input,.report input,.q textarea{width:100%;padding:11px;border:1px solid #b8c9d8;border-radius:10px;font-family:inherit;font-size:16px;background:#fff;color:#123}
+.groups{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.group{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fff}.group h3{margin-top:0}.group .icon{font-size:38px}
+button{border:0;border-radius:10px;padding:11px 15px;font-size:16px;font-family:inherit;cursor:pointer}.primary{background:var(--navy);color:#fff}.secondary{background:#e6eef5;color:var(--navy)}.green{background:var(--green);color:#fff}.red{background:#fff0f0;color:var(--red);border:1px solid #e7bcbc}
+button:disabled{opacity:.5;cursor:not-allowed}.result{margin-top:10px;padding:10px;background:#f7fbff;border:1px dashed #b7c8d8;border-radius:10px;min-height:74px;line-height:1.8}
+table{width:100%;border-collapse:collapse;margin-top:14px}th,td{border:1px solid #ccd9e6;padding:9px;text-align:center}th{background:var(--navy);color:#fff}
+.questions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.q{background:#f7fbff;padding:11px;border-radius:12px}.q textarea{min-height:110px;resize:vertical}.conclusion{background:#edf9f1;border-right:5px solid var(--green)}
+.report{display:grid;grid-template-columns:1fr 1fr;gap:10px}.status{padding:10px;border-radius:10px;background:#f7fbff;margin-top:10px}.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:18px 0}.notice{font-size:14px;color:#5f7387;margin-top:8px}
+@media(max-width:800px){.groups,.questions,.meta,.studentbar,.report{grid-template-columns:1fr}.hero h1{font-size:24px}}
+@media print{button,.actions{display:none!important}.card,.hero{box-shadow:none}body{background:#fff}.wrap{max-width:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<section class="hero">
+<h1>التجربة الإلكترونية: أهمية توحيد أداة القياس</h1>
+<p>فيزياء الصف العاشر – نشاط تفاعلي لاكتشاف أهمية استخدام أداة قياس موحّدة ووحدة معيارية.</p>
+<div class="meta"><div>المبحث: الفيزياء</div><div>الصف: العاشر</div><div>الفصل: الأول</div><div>النشاط: أهمية توحيد أداة القياس</div></div>
+</section>
+<section class="card">
+<h2>👩‍🎓 بيانات الطالب/ة</h2>
+<div class="studentbar">
+<label>الاسم<input id="studentName" type="text" placeholder="اكتبي الاسم هنا"></label>
+<label>الشعبة<input id="className" type="text" placeholder="مثال: عاشر أ"></label>
+<label>التاريخ<input id="expDate" type="date"></label>
+</div>
+<div class="notice">يمكن تعبئة هذه الحقول مباشرة، وسيتم تضمينها عند تنزيل التقرير.</div>
+</section>
+<section class="card goal"><h2>🎯 الهدف</h2><p>أن يستنتج الطالب/ة أن استخدام أداة قياس معيارية ووحدة موحدة يجعل النتائج أكثر دقة وثباتًا وقابلية للمقارنة.</p></section>
+<section class="card">
+<h2>🧪 تنفيذ التجربة</h2>
+<div class="groups">
+<div class="group"><div class="icon">🦶</div><h3>المجموعة الأولى: القياس بالقدم</h3><p>ثلاثة طلبة يقيسون طول الغرفة باستخدام طول القدم.</p><button class="primary" onclick="measureFoot()">نفّذ القياس</button><div class="result" id="footResult">لم يتم القياس بعد.</div></div>
+<div class="group"><div class="icon">🚶</div><h3>المجموعة الثانية: القياس بالخطوات</h3><p>ثلاثة طلبة يقيسون الطول باستخدام خطواتهم.</p><button class="primary" onclick="measureStep()">نفّذ القياس</button><div class="result" id="stepResult">لم يتم القياس بعد.</div></div>
+<div class="group"><div class="icon">📏</div><h3>المجموعة الثالثة: الشريط المتري</h3><p>ثلاثة طلبة يقيسون باستخدام أداة معيارية بوحدة المتر.</p><button class="primary" onclick="measureTape()">نفّذ القياس</button><div class="result" id="tapeResult">لم يتم القياس بعد.</div></div>
+</div>
+<table><thead><tr><th>طريقة القياس</th><th>الطالب/ة 1</th><th>الطالب/ة 2</th><th>الطالب/ة 3</th><th>مستوى الاتفاق</th></tr></thead>
+<tbody>
+<tr><td>القدم</td><td id="f1">—</td><td id="f2">—</td><td id="f3">—</td><td id="fa">—</td></tr>
+<tr><td>الخطوات</td><td id="s1">—</td><td id="s2">—</td><td id="s3">—</td><td id="sa">—</td></tr>
+<tr><td>الشريط المتري</td><td id="t1">—</td><td id="t2">—</td><td id="t3">—</td><td id="ta">—</td></tr>
+</tbody></table>
+<div id="reveal" class="status" style="display:none"><b>🔓 الطول الحقيقي:</b> 8.40 متر. لاحظ/ي أن قراءات الشريط المتري هي الأكثر تقاربًا.</div>
+</section>
+<section class="card">
+<h2>🧠 أسئلة الاستنتاج</h2>
+<div class="questions">
+<div class="q"><b>1) أي المجموعات كانت نتائجها أكثر اتفاقًا؟ ولماذا؟</b><textarea id="q1" placeholder="اكتبي إجابتك هنا"></textarea></div>
+<div class="q"><b>2) لماذا اختلفت نتائج القياس بالقدم والخطوات؟</b><textarea id="q2" placeholder="اكتبي إجابتك هنا"></textarea></div>
+<div class="q"><b>3) ما أهمية توحيد أداة القياس ووحدة القياس؟</b><textarea id="q3" placeholder="اكتبي إجابتك هنا"></textarea></div>
+</div>
+<button class="secondary" style="margin-top:10px" onclick="showFeedback()">إظهار تغذية راجعة</button>
+<div id="feedback" class="status" style="display:none"></div>
+</section>
+<section class="card conclusion"><h2>✅ الخلاصة العلمية</h2><p>توحيد أداة القياس ووحدة القياس يقلل اختلاف النتائج، ويسمح بمقارنتها وإعادة القياس بطريقة موثوقة.</p></section>
+<section class="card">
+<h2>📝 التقرير النهائي</h2>
+<div class="report">
+<label>الاستنتاج النهائي<input id="studentConclusion" type="text" placeholder="مثال: القياس المعياري أكثر ثباتًا"></label>
+<label>تطبيق حياتي<input id="lifeApp" type="text" placeholder="مثال: قياس غرفة أو قطعة أثاث"></label>
+</div>
+<div class="actions">
+<button class="green" onclick="downloadReport()">⬇️ تنزيل تقرير التجربة</button>
+<button class="primary" onclick="window.print()">🖨️ طباعة / حفظ PDF</button>
+<button class="red" onclick="resetExperiment()">🔄 إعادة التجربة</button>
+</div>
+<div class="notice">زر «تنزيل تقرير التجربة» يحفظ ملفًا نصيًا باسم الطالب/ة على الجهاز. وزر «إعادة التجربة» يمسح كل البيانات ويبدأ من جديد.</div>
+</section>
+</div>
+<script>
+const TRUE_LENGTH=8.40; let done={foot:false,step:false,tape:false};
+const $=id=>document.getElementById(id); const rnd=(a,b)=>Math.random()*(b-a)+a;
+function setToday(){ const d=new Date(); $('expDate').value=d.toISOString().slice(0,10); }
+function measureFoot(){const sizes=[rnd(.21,.25),rnd(.25,.29),rnd(.29,.33)],v=sizes.map(x=>Math.round(TRUE_LENGTH/x));['f1','f2','f3'].forEach((id,i)=>$(id).textContent=v[i]+' قدم');$('fa').textContent='ضعيف';$('footResult').innerHTML='النتائج: <b>'+v.join('، ')+'</b> قدم.<br>السبب: طول القدم يختلف بين الأفراد.';done.foot=true;checkDone();}
+function measureStep(){const sizes=[rnd(.48,.58),rnd(.58,.68),rnd(.68,.78)],v=sizes.map(x=>Math.round(TRUE_LENGTH/x));['s1','s2','s3'].forEach((id,i)=>$(id).textContent=v[i]+' خطوة');$('sa').textContent='ضعيف';$('stepResult').innerHTML='النتائج: <b>'+v.join('، ')+'</b> خطوة.<br>السبب: طول الخطوة يختلف بين الأفراد.';done.step=true;checkDone();}
+function measureTape(){const v=[1,2,3].map(()=>Math.round((TRUE_LENGTH+rnd(-.01,.01))*100)/100);['t1','t2','t3'].forEach((id,i)=>$(id).textContent=v[i].toFixed(2)+' م');$('ta').textContent='عالٍ جدًا';$('tapeResult').innerHTML='النتائج: <b>'+v.map(x=>x.toFixed(2)).join('، ')+'</b> م.<br>القراءات متقاربة لأن الأداة معيارية.';done.tape=true;checkDone();}
+function checkDone(){if(done.foot&&done.step&&done.tape){$('reveal').style.display='block';}}
+function showFeedback(){const answers=[$('q1').value,$('q2').value,$('q3').value];const count=answers.filter(x=>x.trim().length>5).length;$('feedback').style.display='block';$('feedback').innerHTML='<b>تغذية راجعة:</b><br>• الشريط المتري أعطى النتائج الأكثر اتفاقًا.<br>• القدم والخطوة تختلفان من شخص إلى آخر.<br>• الأداة والوحدة المعياريتان تجعلان القياسات قابلة للمقارنة والتكرار.<br><br>أجبتِ عن '+count+' من 3 أسئلة.';}
+function textVal(id){return ($(id).value||'').trim()||'—';}
+function tableVal(id){return ($(id).textContent||'—').trim();}
+function downloadReport(){
+ const content=`تقرير تجربة: أهمية توحيد أداة القياس\n\nاسم الطالب/ة: ${textVal('studentName')}\nالشعبة: ${textVal('className')}\nالتاريخ: ${textVal('expDate')}\n\nنتائج القياس:\nالقدم: ${tableVal('f1')} | ${tableVal('f2')} | ${tableVal('f3')}\nالخطوات: ${tableVal('s1')} | ${tableVal('s2')} | ${tableVal('s3')}\nالشريط المتري: ${tableVal('t1')} | ${tableVal('t2')} | ${tableVal('t3')}\n\nالسؤال 1: ${textVal('q1')}\nالسؤال 2: ${textVal('q2')}\nالسؤال 3: ${textVal('q3')}\n\nالاستنتاج النهائي: ${textVal('studentConclusion')}\nتطبيق حياتي: ${textVal('lifeApp')}\n`;
+ const blob=new Blob([content],{type:'text/plain;charset=utf-8'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); const safe=(textVal('studentName')==='—'?'الطالبة':textVal('studentName')).replace(/[\\/:*?"<>|]/g,'-'); a.download='تقرير_تجربة_القياس_'+safe+'.txt'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+function resetExperiment(){done={foot:false,step:false,tape:false};['f1','f2','f3','s1','s2','s3','t1','t2','t3','fa','sa','ta'].forEach(id=>$(id).textContent='—');$('footResult').textContent='لم يتم القياس بعد.';$('stepResult').textContent='لم يتم القياس بعد.';$('tapeResult').textContent='لم يتم القياس بعد.';$('reveal').style.display='none';$('feedback').style.display='none';['studentName','className','q1','q2','q3','studentConclusion','lifeApp'].forEach(id=>$(id).value='');setToday();window.scrollTo({top:0,behavior:'smooth'});}
+window.addEventListener('DOMContentLoaded',setToday);
+</script>
+</body>
+</html>
