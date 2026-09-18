@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>التجربة الإلكترونية: القياس بالورنية</title>
+<style>
+:root{
+  --navy:#173f6b;--blue:#2b6aa3;--sky:#eef7ff;--gold:#d7a33d;
+  --green:#24865a;--red:#b54747;--ink:#17324d;--line:#c9d8e6;--violet:#9f1264;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#eef5fb;color:var(--ink)}
+.wrap{max-width:1150px;margin:auto;padding:18px}
+.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:white;padding:24px;border-radius:20px;box-shadow:0 8px 24px #173f6b22}
+.hero h1{margin:0 0 8px;font-size:30px}.hero p{margin:0;line-height:1.9}
+.meta{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+.meta div{background:#ffffff22;padding:8px;border-radius:10px;text-align:center}
+.card{background:#fff;margin-top:16px;padding:18px;border-radius:18px;box-shadow:0 6px 18px #173f6b15}
+.book{background:#fdf4fa;border-right:5px solid var(--violet)}
+.goal{background:#fff8e8;border-right:5px solid var(--gold)}
+.studentbar{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:10px}
+label{font-weight:700}.studentbar input,.report input,.report textarea,.answers textarea,.readbox input{
+ width:100%;padding:11px;border:1px solid #b8c9d8;border-radius:10px;font-family:inherit;font-size:16px;background:#fff;color:#123}
+.tools{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.tool{border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center;background:#fbfdff}
+.tool .ico{font-size:42px}.tool b{display:block;margin-top:5px}
+.steps{line-height:2.05;margin:0;padding-right:22px}
+.calibrate{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:#f7fbff;border:1px dashed #a9c2d7;border-radius:14px;padding:15px}
+.zero{font-size:16px}.zero span{font-weight:800}
+button{border:0;border-radius:10px;padding:11px 15px;font-size:16px;font-family:inherit;cursor:pointer}
+.primary{background:var(--navy);color:#fff}.secondary{background:#e7eef5;color:var(--navy)}
+.green{background:var(--green);color:#fff}.red{background:#fff0f0;color:var(--red);border:1px solid #e6bbbb}
+button:disabled{opacity:.45;cursor:not-allowed}
+.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.mode{border:1px solid var(--line);padding:14px;border-radius:14px;background:#fff}
+.mode .ico{font-size:38px}.mode h3{margin:7px 0}.mode.active{outline:3px solid #8bb7db;background:#f7fbff}
+.lab{display:grid;grid-template-columns:1.05fr 1.4fr;gap:16px;align-items:stretch}
+.scene,.panel{border:1px solid var(--line);border-radius:16px;background:#fbfdff;padding:15px}
+.scene h3,.panel h3{margin-top:0}
+.visual{height:300px;position:relative;overflow:hidden;border-radius:14px;background:linear-gradient(#eaf8ff,#fff);border:1px solid #cfe0ee}
+.tube{position:absolute;width:105px;height:210px;right:calc(50% - 52px);bottom:20px;border:6px solid #75a9cb;border-top:0;border-radius:0 0 45px 45px;background:#ffffffaa}
+.tube:before{content:"";position:absolute;top:-8px;right:-12px;width:118px;height:13px;border:5px solid #75a9cb;border-radius:50%;background:#eaf8ff}
+.mark{position:absolute;width:65px;border-top:3px dashed var(--violet);right:18px;bottom:88px}
+.caliper{position:absolute;left:18px;top:62px;width:330px;height:125px}
+.beam{position:absolute;left:25px;top:55px;width:285px;height:22px;background:#b7c0c8;border:2px solid #68747f;border-radius:4px}
+.fixedJaw{position:absolute;left:26px;top:18px;width:16px;height:93px;background:#9eaab4;border:2px solid #68747f;border-radius:3px}
+.moveJaw{position:absolute;left:125px;top:18px;width:16px;height:93px;background:#9eaab4;border:2px solid #68747f;border-radius:3px;transition:left .12s}
+.innerFixed{position:absolute;left:31px;top:3px;width:7px;height:30px;background:#87949e;transform:skewX(-12deg)}
+.innerMove{position:absolute;left:130px;top:3px;width:7px;height:30px;background:#87949e;transform:skewX(12deg);transition:left .12s}
+.depthRod{position:absolute;height:6px;background:#6f7d88;left:300px;top:64px;width:0;transition:width .12s}
+.lock{position:absolute;left:112px;top:38px;width:28px;height:12px;background:#d3a441;border-radius:4px;transition:left .12s}
+.modeLabel{position:absolute;left:15px;bottom:10px;background:#173f6bdc;color:#fff;padding:7px 10px;border-radius:9px;font-size:14px}
+.range{width:100%}.sliderline{margin:12px 0}.contact{padding:10px;border-radius:10px;background:#eef5fb;min-height:45px;line-height:1.7}
+.ok{background:#edf9f1;color:#1f704b}.warn{background:#fff7e6;color:#8d6416}.bad{background:#fff0f0;color:#963737}
+.readbox{margin-top:12px;border-top:1px solid #d5e1eb;padding-top:12px;display:none}
+.vernierWrap{background:white;border:1px solid #ccd9e6;border-radius:12px;padding:10px;margin-top:10px;overflow-x:auto}
+canvas{width:100%;height:180px;display:block;min-width:650px}
+.hint{margin-top:8px;padding:10px;background:#fff8e8;border-radius:10px;display:none;line-height:1.7}
+table{width:100%;border-collapse:collapse;margin-top:12px}th,td{border:1px solid #ccd9e6;padding:9px;text-align:center}th{background:var(--navy);color:#fff}
+.answers{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.q{background:#f7fbff;padding:11px;border-radius:12px}.q textarea{min-height:115px;resize:vertical}
+.report{display:grid;grid-template-columns:1fr 1fr;gap:10px}.report .full{grid-column:1/-1}
+.feedback{display:none;margin-top:10px;padding:12px;background:#edf9f1;border-radius:12px;line-height:1.9}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:18px 0}.notice{font-size:14px;color:#607488;margin-top:8px;line-height:1.7}
+.progress{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}.chip{padding:7px 10px;border-radius:999px;background:#e7eef5}.chip.done{background:#daf2e4;color:#236d4a}
+@media(max-width:850px){.meta,.studentbar,.tools,.modes,.lab,.answers,.report{grid-template-columns:1fr}.hero h1{font-size:24px}.visual{height:275px}.report .full{grid-column:auto}}
+@media print{button,.actions,.range{display:none!important}.card,.hero{box-shadow:none}body{background:#fff}.wrap{max-width:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<section class="hero">
+  <h1>🔬 التجربة الإلكترونية: القياس بالورنية</h1>
+  <p>فيزياء الصف العاشر – نشاط (2): قياس القطر الداخلي والخارجي وعمق أنبوب اختبار باستخدام الورنية.</p>
+  <div class="meta"><div>الوحدة الأولى: الميكانيكا</div><div>الفصل الأول: الفيزياء والقياس</div><div>مرجع الكتاب: ص 9</div><div>نشاط (2)</div></div>
+</section>
+
+<section class="card">
+  <h2>👩‍🎓 بيانات الطالب/ة</h2>
+  <div class="studentbar">
+    <label>الاسم<input id="studentName" placeholder="اكتبي الاسم"></label>
+    <label>الشعبة<input id="className" placeholder="مثال: عاشر أ"></label>
+    <label>رقم المجموعة<input id="groupNo" placeholder="مثال: 2"></label>
+    <label>التاريخ<input id="expDate" type="date"></label>
+  </div>
+</section>
+
+<section class="card book">
+  <h2>📘 فكرة النشاط كما في الكتاب</h2>
+  <p>تُستخدم الورنية لقياس <b>القطر الداخلي</b> و<b>القطر الخارجي</b> و<b>العمق</b> لأنبوب اختبار، مع معايرة الورنية قبل القياس وتثبيت القراءة ببرغي التثبيت. قراءة الورنية تتم بجمع قراءة الذراع المدرج مع قراءة المنزلقة.</p>
+</section>
+
+<section class="card goal">
+  <h2>🎯 أهداف التجربة</h2>
+  <p>أن يعاير الطالب/ة الورنية، ويختار الجزء المناسب لكل قياس، ويأخذ قراءة دقيقة للقطر الداخلي والخارجي والعمق، ثم يفسر مصادر الخطأ في القياس.</p>
+</section>
+
+<section class="card">
+  <h2>🧰 الأدوات</h2>
+  <div class="tools">
+    <div class="tool"><div class="ico">🧪</div><b>أنبوب اختبار</b><span>الجسم المراد قياس أبعاده</span></div>
+    <div class="tool"><div class="ico">📏</div><b>ورنية</b><span>لقياس القطر الداخلي والخارجي والعمق</span></div>
+    <div class="tool"><div class="ico">🖊️</div><b>قلم شفافيات</b><span>لتحديد نقطة قياس العمق</span></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>⚙️ الخطوة الأولى: معايرة الورنية</h2>
+  <div class="calibrate">
+    <div class="zero">قبل المعايرة: صفر المنزلقة <span id="zeroA">غير مطابق</span> لصفر الذراع المدرج.</div>
+    <button class="primary" id="calBtn" onclick="calibrate()">معايرة الورنية</button>
+    <div id="calStatus" class="contact warn">يجب أن ينطبق صفر المنزلقة مع صفر الذراع المدرج قبل بدء القياس.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>🧪 اختاري نوع القياس</h2>
+  <div class="modes">
+    <div class="mode" id="mode-internal"><div class="ico">↔️</div><h3>القطر الداخلي</h3><p>استخدمي الفكين الداخليين داخل أنبوب الاختبار.</p><button class="primary" onclick="startMode('internal')" disabled>ابدئي القياس</button></div>
+    <div class="mode" id="mode-external"><div class="ico">🗜️</div><h3>القطر الخارجي</h3><p>استخدمي الفكين الخارجيين حول الأنبوب.</p><button class="primary" onclick="startMode('external')" disabled>ابدئي القياس</button></div>
+    <div class="mode" id="mode-depth"><div class="ico">⬇️</div><h3>العمق</h3><p>استخدمي طرف قياس العمق حتى العلامة المحددة.</p><button class="primary" onclick="startMode('depth')" disabled>ابدئي القياس</button></div>
+  </div>
+  <div class="progress"><span class="chip" id="chip-internal">القطر الداخلي</span><span class="chip" id="chip-external">القطر الخارجي</span><span class="chip" id="chip-depth">العمق</span></div>
+</section>
+
+<section class="card" id="labCard">
+  <h2>🧭 مختبر الورنية الافتراضي</h2>
+  <div class="lab">
+    <div class="scene">
+      <h3>المشهد</h3>
+      <div class="visual">
+        <div class="tube"><div class="mark"></div></div>
+        <div class="caliper">
+          <div class="beam"></div><div class="fixedJaw"></div><div class="moveJaw" id="moveJaw"></div>
+          <div class="innerFixed"></div><div class="innerMove" id="innerMove"></div>
+          <div class="lock" id="lockScrew"></div><div class="depthRod" id="depthRod"></div>
+        </div>
+        <div class="modeLabel" id="modeLabel">عايري الورنية ثم اختاري نوع القياس</div>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>التحكم بالقياس</h3>
+      <p id="instruction">ابدئي بمعايرة الورنية.</p>
+      <div class="sliderline">
+        <label>حرّكي الجزء المتحرك ببطء</label>
+        <input class="range" id="jawSlider" type="range" min="0" max="100" value="0" disabled oninput="moveCaliper(this.value)">
+      </div>
+      <div id="contactStatus" class="contact warn">لم يبدأ القياس بعد.</div>
+      <div style="margin-top:10px">
+        <button class="green" id="lockBtn" onclick="lockReading()" disabled>🔒 ثبتي القراءة ببرغي التثبيت</button>
+      </div>
+      <div class="readbox" id="readBox">
+        <h3>📐 قراءة الورنية</h3>
+        <div class="vernierWrap"><canvas id="scaleCanvas" width="850" height="180"></canvas></div>
+        <p>اكتبي القراءة النهائية بالملليمتر بعد جمع قراءة الذراع المدرج وقراءة المنزلقة:</p>
+        <input id="studentReading" type="number" step="0.01" placeholder="مثال: 35.15">
+        <div style="margin-top:9px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="primary" onclick="checkReading()">تحقق من القراءة</button>
+          <button class="secondary" onclick="showHint()">💡 تلميح</button>
+        </div>
+        <div class="hint" id="hint"></div>
+        <div id="readFeedback" class="contact" style="margin-top:9px"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>📊 جدول النتائج</h2>
+  <table>
+    <thead><tr><th>الكمية المقاسة</th><th>قراءة الذراع المدرج</th><th>قراءة المنزلقة</th><th>القراءة النهائية</th></tr></thead>
+    <tbody>
+      <tr><td>القطر الداخلي</td><td id="iMain">—</td><td id="iVern">—</td><td id="iFinal">—</td></tr>
+      <tr><td>القطر الخارجي</td><td id="eMain">—</td><td id="eVern">—</td><td id="eFinal">—</td></tr>
+      <tr><td>العمق</td><td id="dMain">—</td><td id="dVern">—</td><td id="dFinal">—</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="card">
+  <h2>🧠 أسئلة بعد التنفيذ</h2>
+  <div class="answers">
+    <div class="q"><b>1) لماذا يجب معايرة الورنية قبل القياس؟</b><textarea id="q1" placeholder="اكتبي إجابتك"></textarea></div>
+    <div class="q"><b>2) ما الفرق بين الأجزاء المستخدمة لقياس القطر الداخلي والخارجي والعمق؟</b><textarea id="q2" placeholder="اكتبي إجابتك"></textarea></div>
+    <div class="q"><b>3) ما أثر الضغط الزائد على الفك المتحرك في دقة القراءة؟</b><textarea id="q3" placeholder="اكتبي إجابتك"></textarea></div>
+  </div>
+  <button class="secondary" style="margin-top:10px" onclick="showFeedback()">إظهار تغذية راجعة</button>
+  <div class="feedback" id="feedback"></div>
+</section>
+
+<section class="card">
+  <h2>📝 تقرير التجربة</h2>
+  <div class="report">
+    <label>الفرضية / التوقع قبل التنفيذ<textarea id="hypothesis" placeholder="ماذا تتوقعين قبل القياس؟"></textarea></label>
+    <label>الاستنتاج العلمي<textarea id="conclusion" placeholder="اكتبي الاستنتاج بعد تنفيذ القياسات"></textarea></label>
+    <label>مصدر خطأ محتمل<input id="errorSource" placeholder="مثال: ضغط زائد أو عدم المعايرة"></label>
+    <label>تطبيق حياتي / مهني<input id="application" placeholder="مثال: الصناعات المعدنية أو الخشبية"></label>
+  </div>
+  <div class="actions">
+    <button class="green" onclick="downloadReport()">⬇️ تنزيل تقرير التجربة</button>
+    <button class="primary" onclick="window.print()">🖨️ طباعة / حفظ PDF</button>
+    <button class="secondary" onclick="downloadExperiment()">💾 تنزيل نسخة التجربة</button>
+    <button class="red" onclick="resetExperiment()">🔄 إعادة التجربة</button>
+  </div>
+  <div class="notice">تنبيه سلامة: عند التطبيق الحقيقي، يُتعامل بحذر مع أنبوب الاختبار الزجاجي ولا يُضغط عليه بفكي الورنية ضغطًا زائدًا.</div>
+</section>
+</div>
+
+<script>
+const LC=0.05;
+let calibrated=false,currentMode=null,locked=false,completed={internal:false,external:false,depth:false};
+let values={};
+
+const $=id=>document.getElementById(id);
+const round05=x=>Math.round(x/LC)*LC;
+const rnd=(a,b)=>Math.random()*(b-a)+a;
+
+function newValues(){
+  const internal=round05(rnd(13.5,16.0));
+  const external=round05(internal+rnd(1.2,2.2));
+  const depth=round05(rnd(42,58));
+  values={internal,external,depth};
+}
+function parts(v){
+  const main=Math.floor(v+1e-9);
+  const vernier=Math.round((v-main)*100)/100;
+  return {main,vernier};
+}
+function today(){ $('expDate').value=new Date().toISOString().slice(0,10); }
+
+function beep(freq=620,dur=.08){
+  try{const A=window.AudioContext||window.webkitAudioContext,c=new A(),o=c.createOscillator(),g=c.createGain();o.frequency.value=freq;o.connect(g);g.connect(c.destination);g.gain.value=.035;o.start();setTimeout(()=>{o.stop();c.close()},dur*1000)}catch(e){}
+}
+
+function calibrate(){
+  calibrated=true;$('zeroA').textContent='مطابق';$('zeroA').style.color='#24865a';
+  $('calStatus').className='contact ok';$('calStatus').innerHTML='✅ تمت المعايرة: انطبق صفر المنزلقة مع صفر الذراع المدرج.';
+  $('calBtn').disabled=true;
+  document.querySelectorAll('.mode button').forEach(b=>b.disabled=false);
+  $('instruction').textContent='اختاري الآن نوع القياس المطلوب.'; beep();
+}
+
+function startMode(mode){
+  if(!calibrated)return;
+  currentMode=mode;locked=false;$('jawSlider').disabled=false;$('jawSlider').value=0;$('lockBtn').disabled=true;
+  $('readBox').style.display='none';$('readFeedback').textContent='';$('studentReading').value='';$('hint').style.display='none';
+  document.querySelectorAll('.mode').forEach(x=>x.classList.remove('active'));$('mode-'+mode).classList.add('active');
+  const info={
+    internal:['القطر الداخلي','أدخلي الفكين الداخليين في الأنبوب ثم حرّكي الفك المتحرك ببطء حتى يلامس الجدارين الداخليين دون ضغط زائد.'],
+    external:['القطر الخارجي','ضعي الفكين الخارجيين حول الأنبوب ثم حرّكي الفك ببطء حتى يلامس السطحين الخارجيين.'],
+    depth:['العمق','حرّكي طرف قياس العمق داخل الأنبوب حتى يصل إلى العلامة المحددة بقلم الشفافيات.']
+  };
+  $('modeLabel').textContent=info[mode][0];$('instruction').textContent=info[mode][1];$('contactStatus').className='contact warn';$('contactStatus').textContent='ابدئي التحريك ببطء حتى الوصول إلى موضع التلامس.';
+  moveCaliper(0);
+  document.getElementById('labCard').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function targetSlider(){
+  if(currentMode==='internal') return 62;
+  if(currentMode==='external') return 70;
+  return 78;
+}
+function moveCaliper(v){
+  v=Number(v); const target=targetSlider(); const jawLeft=55+(v*1.55);
+  $('moveJaw').style.left=jawLeft+'px';$('innerMove').style.left=(jawLeft+5)+'px';$('lockScrew').style.left=(jawLeft-13)+'px';
+  if(currentMode==='depth'){$('depthRod').style.width=(v*1.5)+'px'}else{$('depthRod').style.width='0px'}
+  const diff=Math.abs(v-target);
+  if(diff<=2){
+    $('contactStatus').className='contact ok';$('contactStatus').innerHTML='✅ تم التلامس المناسب. توقفي عن الحركة وثبتي القراءة.';
+    $('lockBtn').disabled=false; beep(760,.05);
+  }else if(diff<=10){
+    $('contactStatus').className='contact warn';$('contactStatus').textContent='اقتربتِ من موضع القياس… حرّكي ببطء أكثر.';
+    $('lockBtn').disabled=true;
+  }else if(v>target+2){
+    $('contactStatus').className='contact bad';$('contactStatus').textContent='⚠️ ضغط زائد / تجاوزتِ موضع التلامس. ارجعي قليلًا حتى لا تتأثر دقة القياس.';
+    $('lockBtn').disabled=true;
+  }else{
+    $('contactStatus').className='contact warn';$('contactStatus').textContent='الفك لم يصل بعد إلى السطح المراد قياسه.';
+    $('lockBtn').disabled=true;
+  }
+}
+
+function lockReading(){
+  if(!currentMode)return;locked=true;$('jawSlider').disabled=true;$('lockBtn').disabled=true;
+  $('contactStatus').className='contact ok';$('contactStatus').innerHTML='🔒 تم تثبيت القراءة ببرغي التثبيت. الآن اقرئي الورنية.';
+  $('readBox').style.display='block';drawScale(values[currentMode]);beep(520,.1);
+}
+
+function drawScale(value){
+  const c=$('scaleCanvas'),ctx=c.getContext('2d'),W=c.width,H=c.height;ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
+  const p=parts(value),start=Math.max(0,p.main-5),px=55,spacing=55;
+  ctx.strokeStyle='#173f6b';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(30,60);ctx.lineTo(W-30,60);ctx.stroke();
+  ctx.fillStyle='#17324d';ctx.font='18px Tahoma';ctx.textAlign='center';
+  for(let i=0;i<13;i++){
+    const mm=start+i,x=55+i*spacing;ctx.strokeStyle='#173f6b';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x,60);ctx.lineTo(x,35);ctx.stroke();ctx.fillText(mm,x,28);
+    ctx.font='13px Tahoma';ctx.fillText('mm',x,80);ctx.font='18px Tahoma';
+  }
+  const fracSteps=Math.round(p.vernier/LC); const zeroX=55+(p.main-start)*spacing+p.vernier*spacing;
+  ctx.strokeStyle='#9f1264';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(zeroX,105);ctx.lineTo(zeroX,145);ctx.stroke();
+  ctx.fillStyle='#9f1264';ctx.font='16px Tahoma';ctx.fillText('0',zeroX,165);
+  const vSpace=spacing*0.95;
+  for(let i=1;i<=20;i++){
+    const x=zeroX+i*vSpace/1.0; if(x>W-35)break;
+    ctx.strokeStyle=(i===fracSteps?'#24865a':'#9f1264');ctx.lineWidth=(i===fracSteps?4:1.5);
+    ctx.beginPath();ctx.moveTo(x,105);ctx.lineTo(x,i%5===0?145:135);ctx.stroke();
+    if(i%5===0){ctx.fillStyle='#9f1264';ctx.font='13px Tahoma';ctx.fillText(i,x,165)}
+  }
+  ctx.textAlign='right';ctx.fillStyle='#17324d';ctx.font='15px Tahoma';ctx.fillText('الذراع المدرج',W-35,28);
+  ctx.fillStyle='#9f1264';ctx.fillText('المنزلقة / الورنية',W-35,102);
+  ctx.fillStyle='#24865a';ctx.fillText('الخط الأخضر = التطابق',220,102);
+}
+
+function showHint(){
+  if(!currentMode||!locked)return; const p=parts(values[currentMode]);
+  $('hint').style.display='block';
+  $('hint').innerHTML='قراءة الذراع المدرج = <b>'+p.main.toFixed(0)+' mm</b><br>قراءة المنزلقة = <b>'+p.vernier.toFixed(2)+' mm</b><br>القراءة النهائية = قراءة الذراع + قراءة المنزلقة.';
+}
+function checkReading(){
+  if(!currentMode||!locked)return; const entered=parseFloat($('studentReading').value),correct=values[currentMode];
+  if(Number.isNaN(entered)){$('readFeedback').className='contact bad';$('readFeedback').textContent='اكتبي قراءة رقمية أولًا.';return}
+  if(Math.abs(entered-correct)<=0.011){
+    $('readFeedback').className='contact ok';$('readFeedback').innerHTML='✅ قراءة صحيحة: <b>'+correct.toFixed(2)+' mm</b>';
+    saveResult(currentMode);completed[currentMode]=true;$('chip-'+currentMode).classList.add('done');beep(900,.12);
+    document.querySelector('#mode-'+currentMode+' button').textContent='إعادة هذا القياس';
+  }else{
+    $('readFeedback').className='contact bad';$('readFeedback').innerHTML='❌ ليست القراءة الصحيحة بعد. راقبي قراءة الذراع المدرج ثم حددي تطابق المنزلقة، ويمكنك استخدام التلميح.';beep(220,.1);
+  }
+}
+function saveResult(mode){
+  const p=parts(values[mode]),ids=mode==='internal'?['iMain','iVern','iFinal']:mode==='external'?['eMain','eVern','eFinal']:['dMain','dVern','dFinal'];
+  $(ids[0]).textContent=p.main.toFixed(0)+' mm';$(ids[1]).textContent=p.vernier.toFixed(2)+' mm';$(ids[2]).textContent=values[mode].toFixed(2)+' mm';
+}
+function showFeedback(){
+  $('feedback').style.display='block';
+  $('feedback').innerHTML='<b>تغذية راجعة:</b><br>1) المعايرة تمنع خطأ الصفر وتضمن أن تبدأ القراءة من مرجع صحيح.<br>2) القطر الداخلي يُقاس بالفكين الداخليين، والخارجي بالفكين الخارجيين، والعمق بطرف قياس العمق.<br>3) الضغط الزائد قد يسبب قراءة غير دقيقة وقد يضر الجسم الزجاجي أو يغيّر موضع القياس.';
+}
+function val(id){return (($(id).value||'').trim()||'—')}
+function txt(id){return ($(id).textContent||'—').trim()}
+function downloadReport(){
+  const doneCount=Object.values(completed).filter(Boolean).length;
+  const content=`تقرير النشاط (2): القياس بالورنية
+اسم الطالب/ة: ${val('studentName')}
+الشعبة: ${val('className')}
+رقم المجموعة: ${val('groupNo')}
+التاريخ: ${val('expDate')}
+
+الفرضية: ${val('hypothesis')}
+
+النتائج:
+القطر الداخلي: ${txt('iFinal')} | الذراع: ${txt('iMain')} | المنزلقة: ${txt('iVern')}
+القطر الخارجي: ${txt('eFinal')} | الذراع: ${txt('eMain')} | المنزلقة: ${txt('eVern')}
+العمق: ${txt('dFinal')} | الذراع: ${txt('dMain')} | المنزلقة: ${txt('dVern')}
+عدد القياسات المكتملة: ${doneCount}/3
+
+إجابة س1: ${val('q1')}
+إجابة س2: ${val('q2')}
+إجابة س3: ${val('q3')}
+
+الاستنتاج العلمي: ${val('conclusion')}
+مصدر خطأ محتمل: ${val('errorSource')}
+تطبيق حياتي/مهني: ${val('application')}
+`;
+  const blob=new Blob([content],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  const safe=(val('studentName')==='—'?'الطالبة':val('studentName')).replace(/[\\/:*?"<>|]/g,'-');a.download='تقرير_القياس_بالورنية_'+safe+'.txt';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+function downloadExperiment(){
+  const source='<!DOCTYPE html>\n'+document.documentElement.outerHTML,blob=new Blob([source],{type:'text/html;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='تجربة_القياس_بالورنية.html';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+function resetExperiment(){
+  calibrated=false;currentMode=null;locked=false;completed={internal:false,external:false,depth:false};newValues();
+  $('zeroA').textContent='غير مطابق';$('zeroA').style.color='';$('calBtn').disabled=false;
+  $('calStatus').className='contact warn';$('calStatus').textContent='يجب أن ينطبق صفر المنزلقة مع صفر الذراع المدرج قبل بدء القياس.';
+  document.querySelectorAll('.mode button').forEach(b=>{b.disabled=true;b.textContent='ابدئي القياس'});document.querySelectorAll('.mode').forEach(x=>x.classList.remove('active'));
+  ['chip-internal','chip-external','chip-depth'].forEach(id=>$(id).classList.remove('done'));
+  ['iMain','iVern','iFinal','eMain','eVern','eFinal','dMain','dVern','dFinal'].forEach(id=>$(id).textContent='—');
+  ['studentName','className','groupNo','q1','q2','q3','hypothesis','conclusion','errorSource','application','studentReading'].forEach(id=>$(id).value='');
+  $('jawSlider').disabled=true;$('jawSlider').value=0;$('lockBtn').disabled=true;$('readBox').style.display='none';$('feedback').style.display='none';
+  $('modeLabel').textContent='عايري الورنية ثم اختاري نوع القياس';$('instruction').textContent='ابدئي بمعايرة الورنية.';$('contactStatus').className='contact warn';$('contactStatus').textContent='لم يبدأ القياس بعد.';
+  $('moveJaw').style.left='55px';$('innerMove').style.left='60px';$('lockScrew').style.left='42px';$('depthRod').style.width='0px';today();window.scrollTo({top:0,behavior:'smooth'});
+}
+window.addEventListener('DOMContentLoaded',()=>{newValues();today()});
+</script>
+</body>
+</html>
