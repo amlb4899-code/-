@@ -166,7 +166,7 @@ table{width:100%;border-collapse:collapse;margin-top:12px}th,td{border:1px solid
 </section>
 
 <section class="card">
-  <h2>📊 جدول النتائج</h2>
+  <h2>📊 جدول النتائج <span style="font-size:14px;color:#24865a">— تحديث تلقائي</span></h2>
   <table>
     <thead><tr><th>الكمية المقاسة</th><th>قراءة الذراع المدرج</th><th>قراءة المنزلقة</th><th>القراءة النهائية</th></tr></thead>
     <tbody>
@@ -242,15 +242,33 @@ function calibrate(){
 
 function startMode(mode){
   if(!calibrated)return;
-  currentMode=mode;locked=false;$('jawSlider').disabled=false;$('jawSlider').value=0;$('lockBtn').disabled=true;
-  $('readBox').style.display='none';$('readFeedback').textContent='';$('studentReading').value='';$('hint').style.display='none';
-  document.querySelectorAll('.mode').forEach(x=>x.classList.remove('active'));$('mode-'+mode).classList.add('active');
+  currentMode=mode;
+  locked=false;
+  $('jawSlider').disabled=false;
+  $('jawSlider').value=0;
+  $('lockBtn').disabled=true;
+  $('readBox').style.display='none';
+  $('readFeedback').textContent='';
+  $('studentReading').value='';
+  $('hint').style.display='none';
+
+  document.querySelectorAll('.mode').forEach(x=>x.classList.remove('active'));
+  $('mode-'+mode).classList.add('active');
+
   const info={
     internal:['القطر الداخلي','أدخلي الفكين الداخليين في الأنبوب ثم حرّكي الفك المتحرك ببطء حتى يلامس الجدارين الداخليين دون ضغط زائد.'],
     external:['القطر الخارجي','ضعي الفكين الخارجيين حول الأنبوب ثم حرّكي الفك ببطء حتى يلامس السطحين الخارجيين.'],
     depth:['العمق','حرّكي طرف قياس العمق داخل الأنبوب حتى يصل إلى العلامة المحددة بقلم الشفافيات.']
   };
-  $('modeLabel').textContent=info[mode][0];$('instruction').textContent=info[mode][1];$('contactStatus').className='contact warn';$('contactStatus').textContent='ابدئي التحريك ببطء حتى الوصول إلى موضع التلامس.';
+
+  $('modeLabel').textContent=info[mode][0];
+  $('instruction').textContent=info[mode][1];
+
+  // إظهار قراءة القياس في الجدول مباشرة عند بدء هذا القياس
+  saveResult(mode);
+
+  $('contactStatus').className='contact warn';
+  $('contactStatus').innerHTML='📊 تم تسجيل قيمة <b>'+info[mode][0]+'</b> في جدول النتائج. الآن حرّكي الورنية ببطء حتى موضع التلامس.';
   moveCaliper(0);
   document.getElementById('labCard').scrollIntoView({behavior:'smooth',block:'start'});
 }
