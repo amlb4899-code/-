@@ -281,9 +281,16 @@ function moveCaliper(v){
 }
 
 function lockReading(){
-  if(!currentMode)return;locked=true;$('jawSlider').disabled=true;$('lockBtn').disabled=true;
-  $('contactStatus').className='contact ok';$('contactStatus').innerHTML='🔒 تم تثبيت القراءة ببرغي التثبيت. الآن اقرئي الورنية.';
-  $('readBox').style.display='block';drawScale(values[currentMode]);beep(520,.1);
+  if(!currentMode)return;
+  locked=true;
+  $('jawSlider').disabled=true;
+  $('lockBtn').disabled=true;
+  $('contactStatus').className='contact ok';
+  $('contactStatus').innerHTML='🔒 تم تثبيت القراءة ببرغي التثبيت. تم تسجيل القياس تلقائيًا في جدول النتائج، والآن حاولي قراءة الورنية بنفسك.';
+  saveResult(currentMode);
+  $('readBox').style.display='block';
+  drawScale(values[currentMode]);
+  beep(520,.1);
 }
 
 function drawScale(value){
