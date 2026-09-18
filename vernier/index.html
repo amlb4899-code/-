@@ -289,26 +289,28 @@ function lockReading(){
 function drawScale(value){
   const c=$('scaleCanvas'),ctx=c.getContext('2d'),W=c.width,H=c.height;ctx.clearRect(0,0,W,H);
   ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
-  const p=parts(value),start=Math.max(0,p.main-5),px=55,spacing=55;
-  ctx.strokeStyle='#173f6b';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(30,60);ctx.lineTo(W-30,60);ctx.stroke();
+  const p=parts(value),start=Math.max(0,p.main-4),spacing=48,baseX=70;
+  ctx.strokeStyle='#173f6b';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(35,60);ctx.lineTo(W-35,60);ctx.stroke();
   ctx.fillStyle='#17324d';ctx.font='18px Tahoma';ctx.textAlign='center';
-  for(let i=0;i<13;i++){
-    const mm=start+i,x=55+i*spacing;ctx.strokeStyle='#173f6b';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x,60);ctx.lineTo(x,35);ctx.stroke();ctx.fillText(mm,x,28);
-    ctx.font='13px Tahoma';ctx.fillText('mm',x,80);ctx.font='18px Tahoma';
+  for(let i=0;i<14;i++){
+    const mm=start+i,x=baseX+i*spacing;
+    ctx.strokeStyle='#173f6b';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x,60);ctx.lineTo(x,35);ctx.stroke();
+    ctx.fillText(mm,x,28);
   }
-  const fracSteps=Math.round(p.vernier/LC); const zeroX=55+(p.main-start)*spacing+p.vernier*spacing;
+  const fracSteps=Math.round(p.vernier/LC);
+  const zeroX=baseX+(p.main-start)*spacing+p.vernier*spacing;
   ctx.strokeStyle='#9f1264';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(zeroX,105);ctx.lineTo(zeroX,145);ctx.stroke();
   ctx.fillStyle='#9f1264';ctx.font='16px Tahoma';ctx.fillText('0',zeroX,165);
-  const vSpace=spacing*0.95;
+  const vSpace=22;
   for(let i=1;i<=20;i++){
-    const x=zeroX+i*vSpace/1.0; if(x>W-35)break;
+    const x=zeroX+i*vSpace;
     ctx.strokeStyle=(i===fracSteps?'#24865a':'#9f1264');ctx.lineWidth=(i===fracSteps?4:1.5);
     ctx.beginPath();ctx.moveTo(x,105);ctx.lineTo(x,i%5===0?145:135);ctx.stroke();
     if(i%5===0){ctx.fillStyle='#9f1264';ctx.font='13px Tahoma';ctx.fillText(i,x,165)}
   }
-  ctx.textAlign='right';ctx.fillStyle='#17324d';ctx.font='15px Tahoma';ctx.fillText('الذراع المدرج',W-35,28);
+  ctx.textAlign='right';ctx.fillStyle='#17324d';ctx.font='15px Tahoma';ctx.fillText('الذراع المدرج (mm)',W-35,28);
   ctx.fillStyle='#9f1264';ctx.fillText('المنزلقة / الورنية',W-35,102);
-  ctx.fillStyle='#24865a';ctx.fillText('الخط الأخضر = التطابق',220,102);
+  ctx.fillStyle='#24865a';ctx.textAlign='left';ctx.fillText('الخط الأخضر = التدريج المتطابق',35,102);
 }
 
 function showHint(){
