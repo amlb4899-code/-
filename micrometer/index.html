@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>التجربة الإلكترونية: قياس قطر قلم رصاص بالميكروميتر</title>
+<style>
+:root{
+  --navy:#173f6b;--blue:#2b6aa3;--sky:#eef7ff;--gold:#d7a33d;
+  --green:#24865a;--red:#b54747;--ink:#17324d;--line:#c9d8e6;--violet:#9f1264;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#eef5fb;color:var(--ink)}
+.wrap{max-width:1120px;margin:auto;padding:18px}
+.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;padding:24px;border-radius:20px;box-shadow:0 8px 24px #173f6b22}
+.hero h1{margin:0 0 8px;font-size:30px}.hero p{margin:0;line-height:1.9}
+.meta{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}.meta div{background:#ffffff22;padding:8px;border-radius:10px;text-align:center}
+.card{background:#fff;margin-top:16px;padding:18px;border-radius:18px;box-shadow:0 6px 18px #173f6b15}
+.book{background:#fdf4fa;border-right:5px solid var(--violet)}.goal{background:#fff8e8;border-right:5px solid var(--gold)}
+.studentbar{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:10px}
+label{font-weight:700}.studentbar input,.report input,.report textarea,.answers textarea,.readbox input{
+ width:100%;padding:11px;border:1px solid #b8c9d8;border-radius:10px;font-family:inherit;font-size:16px;background:#fff;color:#123}
+.tools{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.tool{border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center;background:#fbfdff}
+.tool .ico{font-size:42px}.tool b{display:block;margin-top:5px}
+button{border:0;border-radius:10px;padding:11px 15px;font-size:16px;font-family:inherit;cursor:pointer}
+.primary{background:var(--navy);color:#fff}.secondary{background:#e7eef5;color:var(--navy)}.green{background:var(--green);color:#fff}.red{background:#fff0f0;color:var(--red);border:1px solid #e6bbbb}
+button:disabled{opacity:.45;cursor:not-allowed}
+.calibrate,.stepbox{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:#f7fbff;border:1px dashed #a9c2d7;border-radius:14px;padding:15px}
+.status{padding:10px;border-radius:10px;background:#eef5fb;min-height:45px;line-height:1.7}.ok{background:#edf9f1;color:#1f704b}.warn{background:#fff7e6;color:#8d6416}.bad{background:#fff0f0;color:#963737}
+.lab{display:grid;grid-template-columns:1.05fr 1.35fr;gap:16px}.scene,.panel{border:1px solid var(--line);border-radius:16px;background:#fbfdff;padding:15px}
+.visual{height:300px;position:relative;overflow:hidden;border-radius:14px;background:linear-gradient(#eef8ff,#fff);border:1px solid #cfe0ee}
+.frame{position:absolute;left:50px;top:42px;width:260px;height:200px;border:24px solid #68747f;border-right-color:transparent;border-radius:130px 0 0 130px}
+.anvil{position:absolute;left:250px;top:134px;width:58px;height:25px;background:#aab4bc;border:2px solid #606b74}
+.spindle{position:absolute;left:308px;top:134px;width:82px;height:25px;background:#c8d0d6;border:2px solid #68747f;transition:width .12s}
+.sleeve{position:absolute;left:380px;top:111px;width:115px;height:70px;background:#d9dfe4;border:2px solid #6a747d;border-radius:4px}
+.thimble{position:absolute;left:490px;top:101px;width:105px;height:90px;background:linear-gradient(90deg,#aeb8c1,#e1e6ea,#a8b3bc);border:2px solid #626d76;border-radius:8px}
+.ratchet{position:absolute;left:590px;top:118px;width:68px;height:55px;background:#979fa6;border:2px solid #5d666d;border-radius:8px}
+.pencil{position:absolute;left:270px;top:115px;width:70px;height:63px;background:#d99d36;border:5px solid #c88a27;transform:rotate(90deg);border-radius:5px;display:none}
+.pencil:before{content:"";position:absolute;right:-25px;top:11px;border-left:25px solid #d9c09a;border-top:15px solid transparent;border-bottom:15px solid transparent}
+.scaleMain{position:absolute;left:392px;top:128px;font-size:13px;color:#17324d;letter-spacing:3px}
+.scaleCirc{position:absolute;left:513px;top:123px;font-size:12px;color:#7d1653;line-height:1.25}
+.modeLabel{position:absolute;right:14px;bottom:10px;background:#173f6bdc;color:#fff;padding:7px 10px;border-radius:9px;font-size:14px}
+.range{width:100%}.sliderline{margin:12px 0}
+.readbox{margin-top:12px;border-top:1px solid #d5e1eb;padding-top:12px;display:none}
+.microwrap{background:white;border:1px solid #ccd9e6;border-radius:12px;padding:10px;margin-top:10px;overflow-x:auto}
+canvas{width:100%;height:190px;display:block;min-width:650px}
+.hint{margin-top:8px;padding:10px;background:#fff8e8;border-radius:10px;display:none;line-height:1.7}
+table{width:100%;border-collapse:collapse;margin-top:12px}th,td{border:1px solid #ccd9e6;padding:9px;text-align:center}th{background:var(--navy);color:#fff}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px}.compare>div{padding:14px;border-radius:14px;border:1px solid var(--line);background:#fbfdff}
+.answers{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.q{background:#f7fbff;padding:11px;border-radius:12px}.q textarea{min-height:115px;resize:vertical}
+.feedback{display:none;margin-top:10px;padding:12px;background:#edf9f1;border-radius:12px;line-height:1.9}
+.report{display:grid;grid-template-columns:1fr 1fr;gap:10px}.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:18px 0}.notice{font-size:14px;color:#607488;margin-top:8px;line-height:1.7}
+.progress{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.chip{padding:7px 10px;border-radius:999px;background:#e7eef5}.chip.done{background:#daf2e4;color:#236d4a}
+@media(max-width:850px){.meta,.studentbar,.tools,.lab,.compare,.answers,.report{grid-template-columns:1fr}.hero h1{font-size:24px}.visual{height:280px;overflow-x:auto}.frame{left:10px;transform:scale(.85);transform-origin:left top}}
+@media print{button,.actions,.range{display:none!important}.card,.hero{box-shadow:none}body{background:#fff}.wrap{max-width:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<section class="hero">
+  <h1>🔬 التجربة الإلكترونية: قياس قطر قلم رصاص بالميكروميتر</h1>
+  <p>فيزياء الصف العاشر – نشاط (3): قياس قطر قلم رصاص بالميكروميتر ومقارنة القراءة بقراءة الورنية.</p>
+  <div class="meta"><div>الوحدة الأولى: الميكانيكا</div><div>الفصل الأول: الفيزياء والقياس</div><div>مرجع الكتاب: ص 10</div><div>نشاط (3)</div></div>
+</section>
+
+<section class="card">
+  <h2>👩‍🎓 بيانات الطالب/ة</h2>
+  <div class="studentbar">
+    <label>الاسم<input id="studentName" placeholder="اكتبي الاسم"></label>
+    <label>الشعبة<input id="className" placeholder="مثال: عاشر أ"></label>
+    <label>رقم المجموعة<input id="groupNo" placeholder="مثال: 2"></label>
+    <label>التاريخ<input id="expDate" type="date"></label>
+  </div>
+</section>
+
+<section class="card book">
+  <h2>📘 فكرة النشاط كما في الكتاب</h2>
+  <p>تتم معايرة الميكروميتر أولًا، ثم يوضع قلم الرصاص بين فكيه، ويُدار محدد ضغط القياس حتى يثبت القلم وتُسمع النقرة، وبعدها تُقرأ قيمة التدريج الثابت ثم التدريج الدائري وتُجمع القراءتان للحصول على قطر القلم.</p>
+</section>
+
+<section class="card goal">
+  <h2>🎯 الهدف</h2>
+  <p>أن يعاير الطالب/ة الميكروميتر، ويستخدم محدد ضغط القياس بصورة صحيحة، ويقرأ التدريج الثابت والدائري، ويحسب القراءة النهائية بدقة ثم يقارنها بقراءة الورنية.</p>
+</section>
+
+<section class="card">
+  <h2>🧰 الأدوات</h2>
+  <div class="tools">
+    <div class="tool"><div class="ico">✏️</div><b>قلم رصاص</b><span>الجسم المراد قياس قطره</span></div>
+    <div class="tool"><div class="ico">🔩</div><b>ميكروميتر</b><span>لقياس الأقطار الصغيرة بدقة</span></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>⚙️ الخطوة الأولى: معايرة الميكروميتر</h2>
+  <div class="calibrate">
+    <div>قبل المعايرة: صفر التدريج الثابت <b id="zeroState">غير مطابق</b> لصفر التدريج الدائري.</div>
+    <button class="primary" id="calBtn" onclick="calibrate()">معايرة الميكروميتر</button>
+    <div id="calStatus" class="status warn">يجب معايرة الجهاز قبل القياس لتجنب خطأ الصفر.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>✏️ الخطوة الثانية: وضع قلم الرصاص</h2>
+  <div class="stepbox">
+    <div>بعد المعايرة ضعي قلم الرصاص بين فكي الميكروميتر.</div>
+    <button class="primary" id="insertBtn" onclick="insertPencil()" disabled>أدخلي القلم بين الفكين</button>
+    <div id="insertStatus" class="status warn">لم يوضع القلم بعد.</div>
+  </div>
+  <div class="progress"><span class="chip" id="chip-cal">المعايرة</span><span class="chip" id="chip-pencil">إدخال القلم</span><span class="chip" id="chip-ratchet">محدد الضغط</span><span class="chip" id="chip-read">القراءة</span></div>
+</section>
+
+<section class="card" id="labCard">
+  <h2>🧭 مختبر الميكروميتر الافتراضي</h2>
+  <div class="lab">
+    <div class="scene">
+      <h3>المشهد</h3>
+      <div class="visual">
+        <div class="frame"></div>
+        <div class="anvil"></div>
+        <div class="spindle" id="spindle"></div>
+        <div class="sleeve"></div>
+        <div class="thimble"></div>
+        <div class="ratchet"></div>
+        <div class="pencil" id="pencil"></div>
+        <div class="scaleMain">0 1 2 3 4 5 6 7 8</div>
+        <div class="scaleCirc">45<br>40<br>35<br>30<br>25<br>20<br>15<br>10<br>05<br>00</div>
+        <div class="modeLabel" id="modeLabel">ابدئي بالمعايرة</div>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>التحكم بالقياس</h3>
+      <p id="instruction">عايري الميكروميتر ثم ضعي قلم الرصاص.</p>
+      <div class="sliderline">
+        <label>أديري محدد ضغط القياس تدريجيًا</label>
+        <input class="range" id="ratchetSlider" type="range" min="0" max="100" value="0" disabled oninput="turnRatchet(this.value)">
+      </div>
+      <div id="contactStatus" class="status warn">لم يبدأ القياس بعد.</div>
+      <div class="readbox" id="readBox">
+        <h3>📐 قراءة الميكروميتر</h3>
+        <div class="microwrap"><canvas id="scaleCanvas" width="850" height="190"></canvas></div>
+        <p>احسبي القراءة النهائية = قراءة التدريج الثابت + قراءة التدريج الدائري.</p>
+        <input id="studentReading" type="number" step="0.01" placeholder="مثال: 8.62">
+        <div style="margin-top:9px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="primary" onclick="checkReading()">تحقق من القراءة</button>
+          <button class="secondary" onclick="showHint()">💡 تلميح</button>
+        </div>
+        <div class="hint" id="hint"></div>
+        <div id="readFeedback" class="status" style="margin-top:9px"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>📊 جدول النتائج <span style="font-size:14px;color:#24865a">— تحديث تلقائي</span></h2>
+  <table>
+    <thead><tr><th>الكمية المقاسة</th><th>قراءة التدريج الثابت</th><th>قراءة التدريج الدائري</th><th>القراءة النهائية</th></tr></thead>
+    <tbody><tr><td>قطر قلم الرصاص</td><td id="mainRead">—</td><td id="circRead">—</td><td id="finalRead">—</td></tr></tbody>
+  </table>
+</section>
+
+<section class="card">
+  <h2>🔎 مقارنة مع الورنية</h2>
+  <div class="compare">
+    <div><b>قراءة الميكروميتر</b><p id="microCompare">—</p><span>تُظهر منزلتين عشريتين بالمليمتر.</span></div>
+    <div><b>قراءة الورنية التقريبية</b><p id="vernierCompare">—</p><span>للمقارنة بين دقة الأداتين.</span></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>🧠 أسئلة بعد التنفيذ</h2>
+  <div class="answers">
+    <div class="q"><b>1) لماذا تُعاير أداة الميكروميتر قبل البدء بالقياس؟</b><textarea id="q1" placeholder="اكتبي إجابتك"></textarea></div>
+    <div class="q"><b>2) لماذا نستخدم محدد ضغط القياس بدل الشد بقوة؟</b><textarea id="q2" placeholder="اكتبي إجابتك"></textarea></div>
+    <div class="q"><b>3) أي الأداتين أدق عادة: الميكروميتر أم الورنية؟ ولماذا؟</b><textarea id="q3" placeholder="اكتبي إجابتك"></textarea></div>
+  </div>
+  <button class="secondary" style="margin-top:10px" onclick="showFeedback()">إظهار تغذية راجعة</button>
+  <div class="feedback" id="feedback"></div>
+</section>
+
+<section class="card">
+  <h2>📝 تقرير التجربة</h2>
+  <div class="report">
+    <label>الفرضية / التوقع قبل التنفيذ<textarea id="hypothesis" placeholder="ماذا تتوقعين قبل القياس؟"></textarea></label>
+    <label>الاستنتاج العلمي<textarea id="conclusion" placeholder="اكتبي الاستنتاج"></textarea></label>
+    <label>مصدر خطأ محتمل<input id="errorSource" placeholder="مثال: خطأ الصفر أو الشد الزائد"></label>
+    <label>تطبيق حياتي / تقني<input id="application" placeholder="مثال: قياس أقطار الأسلاك الدقيقة"></label>
+  </div>
+  <div class="actions">
+    <button class="green" onclick="downloadReport()">⬇️ تنزيل تقرير التجربة</button>
+    <button class="primary" onclick="window.print()">🖨️ طباعة / حفظ PDF</button>
+    <button class="secondary" onclick="downloadExperiment()">💾 تنزيل نسخة التجربة</button>
+    <button class="red" onclick="resetExperiment()">🔄 إعادة التجربة</button>
+  </div>
+  <div class="notice">تنبيه: لا يُشد الميكروميتر بقوة على القلم؛ وظيفة محدد ضغط القياس هي الوصول إلى ضغط مناسب ومتكرر.</div>
+</section>
+</div>
+
+<script>
+let calibrated=false,pencilInserted=false,measured=false,diameter=0,fixedReading=0,circularReading=0,vernierReading=0;
+const $=id=>document.getElementById(id);
+const rnd=(a,b)=>Math.random()*(b-a)+a;
+
+function newMeasurement(){
+  const fixedOptions=[5,5.5,6,6.5,7,7.5,8,8.5];
+  fixedReading=fixedOptions[Math.floor(Math.random()*fixedOptions.length)];
+  const hundredths=Math.floor(rnd(3,48));
+  circularReading=hundredths/100;
+  diameter=Math.round((fixedReading+circularReading)*100)/100;
+  vernierReading=Math.round(diameter/0.05)*0.05;
+}
+function today(){ $('expDate').value=new Date().toISOString().slice(0,10); }
+function beep(freq=650,dur=.08){
+  try{const A=window.AudioContext||window.webkitAudioContext,c=new A(),o=c.createOscillator(),g=c.createGain();o.frequency.value=freq;o.connect(g);g.connect(c.destination);g.gain.value=.04;o.start();setTimeout(()=>{o.stop();c.close()},dur*1000)}catch(e){}
+}
+function calibrate(){
+  calibrated=true;$('zeroState').textContent='مطابق';$('zeroState').style.color='#24865a';
+  $('calStatus').className='status ok';$('calStatus').textContent='✅ تمت المعايرة: تطابق صفر التدريج الثابت مع صفر التدريج الدائري.';
+  $('calBtn').disabled=true;$('insertBtn').disabled=false;$('chip-cal').classList.add('done');$('modeLabel').textContent='المعايرة تمت';beep();
+}
+function insertPencil(){
+  if(!calibrated)return;
+  pencilInserted=true;$('pencil').style.display='block';$('insertBtn').disabled=true;
+  $('insertStatus').className='status ok';$('insertStatus').textContent='✅ تم وضع قلم الرصاص بين فكي الميكروميتر.';
+  $('ratchetSlider').disabled=false;$('chip-pencil').classList.add('done');$('instruction').textContent='أديري محدد ضغط القياس تدريجيًا حتى تسمعي النقرة.';$('modeLabel').textContent='أديري محدد الضغط';
+  document.getElementById('labCard').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function turnRatchet(v){
+  v=Number(v);
+  const width=Math.max(10,82-v*0.72);$('spindle').style.width=width+'px';
+  if(v<70){$('contactStatus').className='status warn';$('contactStatus').textContent='استمري في تدوير محدد الضغط… لم يصل المغزل إلى القلم بعد.'}
+  else if(v<88){$('contactStatus').className='status warn';$('contactStatus').textContent='اقترب المغزل من القلم… أكملي ببطء.'}
+  else if(!measured){
+    measured=true;$('ratchetSlider').disabled=true;beep(900,.15);
+    $('contactStatus').className='status ok';$('contactStatus').innerHTML='🔊 نقرة! تم تثبيت القلم بالضغط المناسب، وتم تسجيل القياس تلقائيًا.';
+    $('chip-ratchet').classList.add('done');$('modeLabel').textContent='تم التثبيت — اقرئي التدريجين';
+    fillTable();$('readBox').style.display='block';drawScale();$('instruction').textContent='اقرئي التدريج الثابت أولًا، ثم التدريج الدائري، ثم اجمعي القراءتين.';
+  }
+}
+function fillTable(){
+  $('mainRead').textContent=fixedReading.toFixed(1)+' mm';
+  $('circRead').textContent=circularReading.toFixed(2)+' mm';
+  $('finalRead').textContent=diameter.toFixed(2)+' mm';
+  $('microCompare').textContent=diameter.toFixed(2)+' mm';
+  $('vernierCompare').textContent=vernierReading.toFixed(2)+' mm';
+}
+function drawScale(){
+  const c=$('scaleCanvas'),ctx=c.getContext('2d'),W=c.width,H=c.height;ctx.clearRect(0,0,W,H);ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='#173f6b';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(50,75);ctx.lineTo(500,75);ctx.stroke();
+  ctx.font='16px Tahoma';ctx.textAlign='center';ctx.fillStyle='#17324d';
+  for(let i=0;i<=18;i++){
+    const x=60+i*23;
+    const mm=i*0.5;
+    ctx.beginPath();ctx.moveTo(x,75);ctx.lineTo(x,i%2===0?42:55);ctx.stroke();
+    if(i%2===0)ctx.fillText((mm).toFixed(0),x,32);
+  }
+  const fixedX=60+fixedReading/0.5*23;
+  ctx.strokeStyle='#24865a';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(fixedX,38);ctx.lineTo(fixedX,86);ctx.stroke();
+  ctx.fillStyle='#24865a';ctx.fillText('التدريج الثابت',fixedX,105);
+
+  const cx=660,cy=94,r=70;ctx.strokeStyle='#9f1264';ctx.lineWidth=2;ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+  ctx.font='12px Tahoma';ctx.fillStyle='#9f1264';
+  for(let i=0;i<50;i+=5){
+    const ang=(-Math.PI/2)+(i/50)*Math.PI*2,x=cx+Math.cos(ang)*55,y=cy+Math.sin(ang)*55;
+    ctx.fillText(String(i).padStart(2,'0'),x,y+4);
+  }
+  const div=Math.round(circularReading*100),ang=(-Math.PI/2)+(div/50)*Math.PI*2;
+  const x2=cx+Math.cos(ang)*62,y2=cy+Math.sin(ang)*62;
+  ctx.strokeStyle='#24865a';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(x2,y2);ctx.stroke();
+  ctx.fillStyle='#17324d';ctx.font='14px Tahoma';ctx.fillText('التدريج الدائري',cx,182);
+}
+function showHint(){
+  $('hint').style.display='block';$('hint').innerHTML='قراءة التدريج الثابت = <b>'+fixedReading.toFixed(1)+' mm</b><br>قراءة التدريج الدائري = <b>'+circularReading.toFixed(2)+' mm</b><br>القراءة النهائية = مجموع القراءتين.';
+}
+function checkReading(){
+  const x=parseFloat($('studentReading').value);
+  if(Number.isNaN(x)){$('readFeedback').className='status bad';$('readFeedback').textContent='اكتبي قراءة رقمية أولًا.';return}
+  if(Math.abs(x-diameter)<=0.005){
+    $('readFeedback').className='status ok';$('readFeedback').innerHTML='✅ ممتاز، القراءة الصحيحة = <b>'+diameter.toFixed(2)+' mm</b>';
+    $('chip-read').classList.add('done');beep(1000,.12);
+  } else {
+    $('readFeedback').className='status bad';$('readFeedback').textContent='❌ راجعي قراءة التدريج الثابت والدائري ثم اجمعيهما. يمكنك استخدام التلميح.';beep(220,.1);
+  }
+}
+function showFeedback(){
+  $('feedback').style.display='block';
+  $('feedback').innerHTML='<b>تغذية راجعة:</b><br>1) المعايرة تمنع خطأ الصفر.<br>2) محدد ضغط القياس يعطي ضغطًا مناسبًا ومتكررًا ويمنع الشد الزائد.<br>3) الميكروميتر أدق عادة في قياس الأقطار الصغيرة لأنه يتيح قراءة حتى منزلتين عشريتين بالمليمتر.';
+}
+function val(id){return (($(id).value||'').trim()||'—')}
+function txt(id){return ($(id).textContent||'—').trim()}
+function downloadReport(){
+  const content=`تقرير النشاط (3): قياس قطر قلم رصاص بالميكروميتر
+اسم الطالب/ة: ${val('studentName')}
+الشعبة: ${val('className')}
+رقم المجموعة: ${val('groupNo')}
+التاريخ: ${val('expDate')}
+
+الفرضية: ${val('hypothesis')}
+
+النتائج:
+قراءة التدريج الثابت: ${txt('mainRead')}
+قراءة التدريج الدائري: ${txt('circRead')}
+القراءة النهائية بالميكروميتر: ${txt('finalRead')}
+قراءة الورنية التقريبية للمقارنة: ${txt('vernierCompare')}
+
+إجابة س1: ${val('q1')}
+إجابة س2: ${val('q2')}
+إجابة س3: ${val('q3')}
+
+الاستنتاج العلمي: ${val('conclusion')}
+مصدر خطأ محتمل: ${val('errorSource')}
+تطبيق حياتي/تقني: ${val('application')}
+`;
+  const blob=new Blob([content],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  const safe=(val('studentName')==='—'?'الطالبة':val('studentName')).replace(/[\\/:*?"<>|]/g,'-');a.download='تقرير_الميكروميتر_'+safe+'.txt';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+function downloadExperiment(){
+  const source='<!DOCTYPE html>\n'+document.documentElement.outerHTML,blob=new Blob([source],{type:'text/html;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='تجربة_قياس_قطر_قلم_بالميكروميتر.html';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+function resetExperiment(){
+  calibrated=false;pencilInserted=false;measured=false;newMeasurement();
+  $('zeroState').textContent='غير مطابق';$('zeroState').style.color='';$('calBtn').disabled=false;$('insertBtn').disabled=true;
+  $('calStatus').className='status warn';$('calStatus').textContent='يجب معايرة الجهاز قبل القياس لتجنب خطأ الصفر.';
+  $('insertStatus').className='status warn';$('insertStatus').textContent='لم يوضع القلم بعد.';$('pencil').style.display='none';$('ratchetSlider').disabled=true;$('ratchetSlider').value=0;$('spindle').style.width='82px';
+  $('contactStatus').className='status warn';$('contactStatus').textContent='لم يبدأ القياس بعد.';$('readBox').style.display='none';$('feedback').style.display='none';
+  ['mainRead','circRead','finalRead','microCompare','vernierCompare'].forEach(id=>$(id).textContent='—');
+  ['chip-cal','chip-pencil','chip-ratchet','chip-read'].forEach(id=>$(id).classList.remove('done'));
+  ['studentName','className','groupNo','studentReading','q1','q2','q3','hypothesis','conclusion','errorSource','application'].forEach(id=>$(id).value='');
+  $('instruction').textContent='عايري الميكروميتر ثم ضعي قلم الرصاص.';$('modeLabel').textContent='ابدئي بالمعايرة';today();window.scrollTo({top:0,behavior:'smooth'});
+}
+window.addEventListener('DOMContentLoaded',()=>{newMeasurement();today()});
+</script>
+</body>
+</html>
