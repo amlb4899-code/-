@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>لعبة بطاقات جنيف</title>
+<style>
+  :root{--navy:#07182D;--navy2:#0A2241;--gold:#D7B46A;--cream:#FFF8E8;--soft:#DCE5F1;--green:#4C7A5F;--red:#B54848;}
+  *{box-sizing:border-box} body{margin:0;font-family:"Simplified Arabic",Tahoma,Arial,sans-serif;background:radial-gradient(circle at 20% 10%,#18385f 0,#07182D 40%,#030914 100%);color:var(--cream);min-height:100vh;}
+  header{padding:28px 24px 10px;text-align:center} h1{margin:0;font-size:clamp(30px,5vw,52px);color:var(--gold)} p{font-size:20px;line-height:1.7;margin:8px auto;max-width:980px;color:var(--soft)}
+  .wrap{max-width:1100px;margin:0 auto;padding:16px 20px 40px}.panel{border:1px solid rgba(215,180,106,.45);background:rgba(10,34,65,.72);border-radius:24px;padding:22px;box-shadow:0 18px 60px rgba(0,0,0,.35)}
+  .top{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap}.score{font-size:24px;color:var(--gold);font-weight:bold}.buttons{display:flex;gap:10px;flex-wrap:wrap}button{font-family:inherit;border:0;border-radius:999px;padding:12px 22px;font-size:18px;cursor:pointer;background:var(--gold);color:#102033;font-weight:bold}button.secondary{background:#fff;color:#102033}.card{margin:22px auto;padding:26px;border-radius:24px;background:linear-gradient(135deg,#fff,#fff6df);color:#142033;min-height:210px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:29px;line-height:1.55;border:3px solid var(--gold);box-shadow:0 12px 35px rgba(0,0,0,.35)}
+  .choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:16px}.choice{background:#102B4E;border:1px solid rgba(215,180,106,.55);color:var(--cream);border-radius:18px;padding:16px;cursor:pointer;font-size:19px;line-height:1.5;min-height:80px}.choice:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(0,0,0,.25)}
+  .feedback{font-size:24px;text-align:center;min-height:50px;margin:20px 0 6px;font-weight:bold}.ok{color:#a7e3b4}.bad{color:#ffb0a6}.small{font-size:16px;color:#b8c6d6;text-align:center;margin-top:18px} footer{text-align:center;padding:20px;color:#98a8b9}
+</style>
+</head>
+<body>
+<header>
+  <h1>لعبة بطاقات جنيف</h1>
+  <p>اختاري الإجابة القانونية الأقرب لكل موقف: أي اتفاقية أو مبدأ يحمي الحالة؟</p>
+</header>
+<main class="wrap">
+<section class="panel">
+  <div class="top"><div class="score">النقاط: <span id="score">0</span> / <span id="total">0</span></div><div class="buttons"><button onclick="nextCard()">بطاقة جديدة</button><button class="secondary" onclick="restart()">إعادة اللعب</button></div></div>
+  <div id="card" class="card">اضغطي: بطاقة جديدة</div>
+  <div id="choices" class="choices"></div>
+  <div id="feedback" class="feedback"></div>
+  <div class="small">فكرة التقديم: اطلبي من زميلتين الإجابة بصوت عالٍ ثم اسألي: لماذا؟</div>
+</section>
+</main>
+<footer>القانون الدولي الإنساني | اتفاقيات جنيف الأربع والبروتوكولات الإضافية</footer>
+<script>
+const data = [
+ {q:'مقاتل جريح في الميدان لا يستطيع المشاركة في القتال ويحتاج علاجاً.', a:'الاتفاقية الأولى', explain:'لأنها تحمي الجرحى والمرضى من القوات المسلحة في الميدان.'},
+ {q:'أفراد عسكريون غرقى أو جرحى في البحر بعد تضرر سفينة.', a:'الاتفاقية الثانية', explain:'لأنها تتعلق بالجرحى والمرضى والغرقى في البحر.'},
+ {q:'شخص وقع في الأسر أثناء نزاع مسلح ويحتاج معاملة إنسانية.', a:'الاتفاقية الثالثة', explain:'لأنها تنظم حماية أسرى الحرب ومعاملتهم.'},
+ {q:'عائلة مدنية لا تشارك في القتال وتحتاج حماية ومساعدة.', a:'الاتفاقية الرابعة', explain:'لأنها تركز على حماية المدنيين زمن النزاع.'},
+ {q:'يجب التفريق بين المدنيين والمقاتلين قبل أي عمل عسكري.', a:'مبدأ التمييز', explain:'التمييز من أهم مبادئ القانون الدولي الإنساني.'},
+ {q:'يجب تجنب ضرر مدني مفرط مقارنة بالميزة العسكرية المتوقعة.', a:'مبدأ التناسب', explain:'هذا هو جوهر مبدأ التناسب.'},
+ {q:'نزاع مسلح غير دولي يحتاج ضمانات إنسانية إضافية.', a:'البروتوكول الإضافي الثاني', explain:'يرتبط ببعض النزاعات المسلحة غير الدولية.'},
+ {q:'شارَة حماية إضافية إلى جانب الشارات المعروفة.', a:'البروتوكول الإضافي الثالث', explain:'قدّم شارة الكريستالة الحمراء.'}
+];
+const options = ['الاتفاقية الأولى','الاتفاقية الثانية','الاتفاقية الثالثة','الاتفاقية الرابعة','مبدأ التمييز','مبدأ التناسب','البروتوكول الإضافي الثاني','البروتوكول الإضافي الثالث'];
+let current=null, score=0, answered=0;
+document.getElementById('total').textContent=data.length;
+function shuffle(arr){return [...arr].sort(()=>Math.random()-0.5)}
+function nextCard(){
+  if(answered>=data.length){document.getElementById('card').textContent='انتهت الجولة! نتيجتك: '+score+' / '+data.length; document.getElementById('choices').innerHTML=''; return;}
+  const remaining=data.filter(x=>!x.used); current=remaining[Math.floor(Math.random()*remaining.length)]; current.used=true;
+  document.getElementById('feedback').textContent=''; document.getElementById('feedback').className='feedback'; document.getElementById('card').textContent=current.q;
+  const ch=shuffle([current.a,...shuffle(options.filter(o=>o!==current.a)).slice(0,3)]);
+  document.getElementById('choices').innerHTML=ch.map(c=>`<div class="choice" onclick="answer('${c.replace(/'/g,"\\'")}')">${c}</div>`).join('');
+}
+function answer(c){
+ if(!current) return; const fb=document.getElementById('feedback'); answered++;
+ if(c===current.a){score++; fb.className='feedback ok'; fb.textContent='إجابة صحيحة: '+current.explain;} else {fb.className='feedback bad'; fb.textContent='الأقرب: '+current.a+' — '+current.explain;}
+ document.getElementById('score').textContent=score; document.getElementById('choices').innerHTML=''; current=null;
+}
+function restart(){data.forEach(x=>delete x.used);current=null;score=0;answered=0;document.getElementById('score').textContent=0;document.getElementById('card').textContent='اضغطي: بطاقة جديدة';document.getElementById('choices').innerHTML='';document.getElementById('feedback').textContent='';}
+</script>
+</body>
+</html>
